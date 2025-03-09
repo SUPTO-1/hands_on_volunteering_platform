@@ -27,15 +27,20 @@ const Signup = () => {
     const res = await axios.post("http://localhost:5000/signup", userData);
     if(res.status == 201)
     {
+      localStorage.setItem("token", res.data.token);
       Swal.fire({
         title: "success!",
         text: "Account Created Successfully",
         icon: "success",
         confirmButtonText: "Okay",
-      });
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/login";
+        }
+      })
     }
     form.reset();
-    window.location.href = "/login";
+    //window.location.href = "/login";
    }
    catch(err)
    {

@@ -13,14 +13,19 @@ const Login = () => {
       const res = await axios.post("http://localhost:5000/login",userData);
       if(res.status == 200)
       {
+        localStorage.setItem("token", res.data.token);
         Swal.fire({
           title: "success!",
           text: "Login Successfully",
           icon: "success",
           confirmButtonText: "Okay",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/";
+          }
         })
         form.reset();
-        window.location.href = "/";
+        //window.location.href = "/";
       }
       else
       {
