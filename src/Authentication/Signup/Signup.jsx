@@ -57,6 +57,7 @@ const Signup = () => {
       <div className="hero-content flex-col w-full max-w-lg">
         <div className="card bg-base-100 w-full shadow-2xl p-6">
           <form onSubmit={handleRegister} className="card-body">
+            <h1 className="text-3xl font-bold text-center font-poppins">Register Now!</h1>
             <fieldset className="fieldset">
               <label className="fieldset-label">Name</label>
               <input type="text" className="input input-bordered w-full" placeholder="Name" name="name" required />
