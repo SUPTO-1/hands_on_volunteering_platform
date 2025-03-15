@@ -1,13 +1,21 @@
 import { Link, NavLink } from "react-router-dom";
+import { useAuth } from "../Context/AuthContext";
 
 const Navbar = () => {
-    const links = (
-        <>
-        <li className="text-xl font-poppins text-[#5A3E2B] font-medium"><NavLink to="/">Home</NavLink></li>
-        <li className="text-xl font-poppins text-[#5A3E2B]  font-medium"><NavLink to="/events">Events</NavLink></li>
-        <li className="text-xl font-poppins text-[#5A3E2B] font-medium"><NavLink to="/teams">Teams</NavLink></li>
-        </>
-    )
+  const { user, logout } = useAuth();
+  const links = (
+    <>
+      <li className="text-xl font-poppins text-[#5A3E2B] font-medium">
+        <NavLink to="/">Home</NavLink>
+      </li>
+      <li className="text-xl font-poppins text-[#5A3E2B]  font-medium">
+        <NavLink to="/events">Events</NavLink>
+      </li>
+      <li className="text-xl font-poppins text-[#5A3E2B] font-medium">
+        <NavLink to="/teams">Teams</NavLink>
+      </li>
+    </>
+  );
   return (
     <div className="navbar shadow-sm bg-[#E1EACD] p-5">
       <div className="navbar-start">
@@ -39,12 +47,31 @@ const Navbar = () => {
         <a className="btn btn-ghost text-xl font-poppins">Warriors</a>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-          {links}
-        </ul>
+        <ul className="menu menu-horizontal px-1">{links}</ul>
       </div>
       <div className="navbar-end">
-        <Link to='/login'><a className="font-roboto font-bold text-[#5A3E2B] text-xl">Login</a></Link>
+        {user ? (
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0} className="btn btn-ghost">
+              {user.name}
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              <li>
+                <button onClick={logout}>Logout</button>
+              </li>
+            </ul>
+          </div>
+        ) : (
+          <Link
+            to="/login"
+            className="font-roboto font-bold text-[#5A3E2B] text-xl"
+          >
+            Login
+          </Link>
+        )}
       </div>
     </div>
   );

@@ -27,20 +27,15 @@ const Signup = () => {
     const res = await axios.post("http://localhost:5000/signup", userData);
     if(res.status == 201)
     {
-      localStorage.setItem("token", res.data.token);
       Swal.fire({
         title: "success!",
         text: "Account Created Successfully",
         icon: "success",
         confirmButtonText: "Okay",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = "/login";
-        }
-      })
+      });
     }
     form.reset();
-    //window.location.href = "/login";
+    window.location.href = "/login";
    }
    catch(err)
    {
@@ -57,7 +52,6 @@ const Signup = () => {
       <div className="hero-content flex-col w-full max-w-lg">
         <div className="card bg-base-100 w-full shadow-2xl p-6">
           <form onSubmit={handleRegister} className="card-body">
-            <h1 className="text-3xl font-bold text-center font-poppins">Register Now!</h1>
             <fieldset className="fieldset">
               <label className="fieldset-label">Name</label>
               <input type="text" className="input input-bordered w-full" placeholder="Name" name="name" required />
