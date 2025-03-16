@@ -9,6 +9,7 @@ import AddEvent from "../Events/AddEvent/AddEvent";
 import EventAttendanceList from "../Events/EventAttendanceList/EventAttendanceList";
 import Community from "../Community/Community";
 import AddRequest from "../Community/AddRequest/AddRequest";
+import CommunityMembers from "../Community/CommunityMembers/CommunityMembers";
 
 const routes = createBrowserRouter([
     {
@@ -43,6 +44,10 @@ const routes = createBrowserRouter([
             {
                 path:"/addRequest",
                 element:<PrivateRoute><AddRequest></AddRequest></PrivateRoute>
+            },
+            {
+                path:"/community/:requestId/members",
+                element:<PrivateRoute><CommunityMembers></CommunityMembers></PrivateRoute>
             }
         ]
     },

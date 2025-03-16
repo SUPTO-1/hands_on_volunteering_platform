@@ -3,16 +3,17 @@ import { useEffect, useState } from "react";
 import { FiPlusSquare } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useAuth } from "../Context/AuthContext";
 
 const Community = () => {
   const [loading, setLoading] = useState(true);
-  const [events, setEvents] = useState([]);
-
+  const [requests, setRequests] = useState([]);
+  const { user } = useAuth();
   useEffect(() => {
     const fetchRequests = async () => {
       try {
         const response = await axios.get("http://localhost:5000/requests");
-        setEvents(response.data.requests);
+        setRequests(response.data.requests);
       } catch (err) {
         console.log(err);
         Swal.fire({
@@ -26,6 +27,53 @@ const Community = () => {
     };
     fetchRequests();
   }, []);
+
+  const handleJoinCommunity = async (requestId) => {
+    if (!user) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please login to join community",
+      });
+      return;
+    }
+    try {
+      const { data } = await axios.post(
+        `http://localhost:5000/requests/${requestId}/response`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setRequests(
+        requests.map((request) =>
+          request.id === requestId
+            ? {
+                ...request,
+                hasJoined: true,
+                attendee_count: request.attendee_count + 1,
+              }
+            : request
+        )
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: data.message || "Successfully joined the community",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (err) {
+      console.log(err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err.response?.data?.message || "Failed to join Community",
+      });
+    }
+  };
 
   return (
     <div className="p-4">
@@ -42,63 +90,58 @@ const Community = () => {
         <div className="text-center py-8">
           <span className="loading loading-spinner loading-lg"></span>
         </div>
-      ) : events.length === 0 ? (
+      ) : requests.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
           No upcoming events found
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 font-poppins">
-          {events.map((event) => (
+          {requests.map((request) => (
             <div
-              key={event.id}
+              key={request.id}
               className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow"
             >
               <div className="card-body">
                 <div className="flex justify-between items-start">
-                  <h3 className="card-title text-xl">{event.title}</h3>
+                  <h3 className="card-title text-xl">{request.title}</h3>
                   <span
                     className={`badge ${
-                      event.status === "open"
+                      request.urgency === "Low"
                         ? "badge-primary"
-                        : event.status === "closed"
+                        : request.urgency === "Medium"
                         ? "badge-secondary"
                         : "badge-accent"
                     }`}
                   >
-                    {event.status}
+                    {request.urgency}
                   </span>
                 </div>
-                <p className="text-gray-600">{event.description}</p>
+                <p className="text-gray-600">{request.description}</p>
                 <div className="space-y-2 mt-4">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">Location:</span>
-                    {event.location}
+                    {request.location}
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">Category:</span>
                     <span className="badge badge-outline">
-                      {event.category}
+                      {request.category}
                     </span>
                   </div>
                 </div>
                 <div className="xl:flex justify-between items-center gap-2">
                   <div className="mt-4 text-sm text-gray-500">
-                    Created by: {event.creator_name}
+                    Created by: {request.creator_name}
                   </div>
                   <div className="flex flex-col gap-2 mt-4 xl:mt-0">
                     <button
-                      className={`btn ${
-                        event.hasJoined ? "btn-success" : "btn-primary"
-                      } gap-2`}
-                      disabled={event.hasJoined}
+                      onClick={() => handleJoinCommunity(request.id)}
+                      className="btn btn-primary"
                     >
-                      {event.hasJoined ? "Joined ✓" : "Join Event"}
+                      Help!
                     </button>
-                    <Link
-                      to={`/events/${event.id}/attendanceList`}
-                      className="btn btn-outline gap-2"
-                    >
-                      Attendance List
+                    <Link to ={`/community/${request.id}/members`} className="btn btn-outline gap-2">
+                      Community Members
                     </Link>
                   </div>
                 </div>
