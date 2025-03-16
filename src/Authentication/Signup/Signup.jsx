@@ -32,10 +32,11 @@ const Signup = () => {
         text: "Account Created Successfully",
         icon: "success",
         confirmButtonText: "Okay",
-      });
+      }).then(() => {
+        form.reset();
+        window.location.href = "/login";
+      })
     }
-    form.reset();
-    window.location.href = "/login";
    }
    catch(err)
    {

@@ -5,6 +5,8 @@ import { Children } from "react";
 import Signup from "../Authentication/Signup/Signup";
 import Events from "../Events/Events";
 import PrivateRoute from "../Authentication/PrivateRoute/PrivateRoute";
+import AddEvent from "../Events/AddEvent/AddEvent";
+import EventAttendanceList from "../Events/EventAttendanceList/EventAttendanceList";
 
 const routes = createBrowserRouter([
     {
@@ -23,6 +25,14 @@ const routes = createBrowserRouter([
                 path:"/events",
                 element: <PrivateRoute><Events></Events></PrivateRoute>
 
+            },
+            {
+                path:"addEvent",
+                element:<PrivateRoute><AddEvent></AddEvent></PrivateRoute>
+            },
+            {
+                path:"/events/:eventId/attendanceList",
+                element:<PrivateRoute><EventAttendanceList></EventAttendanceList></PrivateRoute>
             }
         ]
     },
