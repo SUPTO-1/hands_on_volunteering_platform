@@ -8,6 +8,7 @@ import { useAuth } from "../Context/AuthContext"; // Adjust path as needed
 const Events = () => {
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState("");
   const { user } = useAuth();
 
   useEffect(() => {
@@ -49,13 +50,17 @@ const Events = () => {
           },
         }
       );
-      setEvents(events.map(event => 
-        event.id === eventId ? { 
-          ...event, 
-          hasJoined: true,
-          attendee_count: event.attendee_count + 1 
-        } : event
-      ));
+      setEvents(
+        events.map((event) =>
+          event.id === eventId
+            ? {
+                ...event,
+                hasJoined: true,
+                attendee_count: event.attendee_count + 1,
+              }
+            : event
+        )
+      );
 
       Swal.fire({
         icon: "success",
@@ -74,14 +79,38 @@ const Events = () => {
     }
   };
 
+  // filter funcyionality 
+  const filterEvents = selectedLocation ?
+  events.filter(event=> event.location.toLowerCase() === selectedLocation.toLowerCase()) : events;
+
+  const handleLocationFilter = (location) => {
+    setSelectedLocation(location === "All" ? "" : location);
+  }
+
   return (
     <div className="p-4">
-      <div className="flex justify-between items-center mb-8">
+      <div className="lg:flex justify-between items-center mb-8">
         <h2 className="text-2xl font-bold">Upcoming Events</h2>
-        <Link to="/addEvent" className="btn btn-primary gap-2">
-          <FiPlusSquare className="text-lg" />
-          Add Event
-        </Link>
+        <div className="flex items-center gap-4">
+          <div className="dropdown dropdown-end">
+            <label tabIndex={0} className="btn m-1">
+              Location {selectedLocation && `: ${selectedLocation}`}
+            </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              <li><a onClick={() => handleLocationFilter("All")}>All Locations</a></li>
+              <li><a onClick={() => handleLocationFilter("Dhaka")}>Dhaka</a></li>
+              <li><a onClick={() => handleLocationFilter("Chittagong")}>Chittagong</a></li>
+              <li><a onClick={() => handleLocationFilter("Rajshahi")}>Rajshahi</a></li>
+            </ul>
+          </div>
+          <Link to="/addEvent" className="btn btn-primary gap-2">
+            <FiPlusSquare className="text-lg" />
+            Add Event
+          </Link>
+        </div>
       </div>
 
       {loading ? (
@@ -93,8 +122,8 @@ const Events = () => {
           No upcoming events found
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 font-poppins">
+          {filterEvents.map((event) => (
             <div
               key={event.id}
               className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow"

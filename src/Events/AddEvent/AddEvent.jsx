@@ -1,7 +1,9 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const AddEvent = () => {
+  const navigate = useNavigate();
   const handleAddEvent = async(e) =>
   {
     e.preventDefault();
@@ -32,7 +34,7 @@ const AddEvent = () => {
           confirmButtonText: "Okay",
         }).then(() => {
           form.reset();
-          window.location.href = "/events";
+          navigate("/events");
         })
       }
     }
