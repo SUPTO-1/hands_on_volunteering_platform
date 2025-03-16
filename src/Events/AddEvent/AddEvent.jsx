@@ -1,9 +1,7 @@
 import axios from "axios";
-import { useAuth } from "../../Context/AuthContext";
 import Swal from "sweetalert2";
 
 const AddEvent = () => {
-  const {user} = useAuth();
   const handleAddEvent = async(e) =>
   {
     e.preventDefault();
