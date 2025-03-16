@@ -10,7 +10,7 @@ const AddRequest = () => {
         const form = e.target;
         const title = form.title.value;
         const category = form.category.value;
-        const location = form.category.value;
+        const location = form.location.value;
         const urgency = form.urgency.value;
         const status = form.status.value;
         const description = form.description.value;
