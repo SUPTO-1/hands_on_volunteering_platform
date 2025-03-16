@@ -11,6 +11,9 @@ const Navbar = () => {
       <li className="text-xl font-poppins text-[#5A3E2B]  font-medium">
         <NavLink to="/events">Events</NavLink>
       </li>
+      <li className="text-xl font-poppins text-[#5A3E2B]  font-medium">
+        <NavLink to="/community">Request</NavLink>
+      </li>
       <li className="text-xl font-poppins text-[#5A3E2B] font-medium">
         <NavLink to="/teams">Teams</NavLink>
       </li>
