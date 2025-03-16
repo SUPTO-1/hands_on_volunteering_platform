@@ -2,10 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { FiPlusSquare } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
+import { useAuth } from "../Context/AuthContext"; // Adjust path as needed
 
 const Events = () => {
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState([]);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -16,10 +19,60 @@ const Events = () => {
       } catch (err) {
         console.log(err);
         setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to load events",
+        });
       }
     };
     fetchEvents();
   }, []);
+
+  const handleJoinEvent = async (eventId) => {
+    if (!user) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please login to join events",
+      });
+      return;
+    }
+
+    try {
+      const { data } = await axios.post(
+        `http://localhost:5000/events/${eventId}/join`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setEvents(events.map(event => 
+        event.id === eventId ? { 
+          ...event, 
+          hasJoined: true,
+          attendee_count: event.attendee_count + 1 
+        } : event
+      ));
+
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: data.message || "Successfully joined the event",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (err) {
+      console.log(err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err.response?.data?.message || "Failed to join event",
+      });
+    }
+  };
 
   return (
     <div className="p-4">
@@ -82,13 +135,27 @@ const Events = () => {
                     </span>
                   </div>
                 </div>
-                <div className="lg:flex justify-between">
-                <div className="mt-4 text-sm text-gray-500">
-                  Created by: {event.creator_name}
-                </div>
-                <div>
-                <button className="btn btn-primary gap-2 mt-4 lg:mt-0">Join Event</button>
-                </div>
+                <div className="xl:flex justify-between items-center gap-2">
+                  <div className="mt-4 text-sm text-gray-500">
+                    Created by: {event.creator_name}
+                  </div>
+                  <div className="flex flex-col gap-2 mt-4 xl:mt-0">
+                    <button
+                      onClick={() => handleJoinEvent(event.id)}
+                      className={`btn ${
+                        event.hasJoined ? "btn-success" : "btn-primary"
+                      } gap-2`}
+                      disabled={event.hasJoined}
+                    >
+                      {event.hasJoined ? "Joined ✓" : "Join Event"}
+                    </button>
+                    <Link
+                      to={`/events/${event.id}/attendanceList`}
+                      className="btn btn-outline gap-2"
+                    >
+                      Attendance List
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
