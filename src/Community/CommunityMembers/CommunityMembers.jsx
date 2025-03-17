@@ -2,40 +2,80 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-
+import { useAuth } from "../../Context/AuthContext";
 const CommunityMembers = () => {
-    const {requestId} = useParams();
-    const [request, setRequest] = useState(null);
-    const [members, setMembers] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const { requestId } = useParams();
+  const [request, setRequest] = useState(null);
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState([]);
 
-    useEffect(()=>{
-        const fetchData = async()=>{
-            try{
-                const [requestRes, membersRes] = await Promise.all([
-                    axios.get(`http://localhost:5000/requests/${requestId}`),
-                    axios.get(`http://localhost:5000/requests/${requestId}/members`)
-                ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [requestRes, membersRes, commentsRes] = await Promise.all([
+          axios.get(`http://localhost:5000/requests/${requestId}`),
+          axios.get(`http://localhost:5000/requests/${requestId}/members`),
+          axios.get(`http://localhost:5000/requests/${requestId}/comments`)
 
-                setRequest(requestRes.data.request);
-                setMembers(membersRes.data.members);
-                setLoading(false);
-            }
-            catch(err){
-                console.error(err);
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "Failed to load members",
-                });
-                setLoading(false);
-            }
-        };
+        ]);
 
-        fetchData();
-    },[requestId]);
-    return (
-        <div className="p-4 max-w-6xl mx-auto">
+        setRequest(requestRes.data.request);
+        setMembers(membersRes.data.members);
+        setComments(commentsRes.data.comments);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to load members",
+        });
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [requestId]);
+
+  const handleCommentSubmit = async(e) =>
+  {
+    e.preventDefault();
+    if(!newComment.trim())return;
+    try
+    {
+      const {data} = await axios.post(
+        `http://localhost:5000/requests/${requestId}/comments`,{content:newComment},{
+          headers:{
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }
+
+      );
+      setComments([...comments,data.comment]);
+      setNewComment("");
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Comment Posted",
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+    catch(err)
+    {
+      console.log(err);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to post comment",
+        text: err.response?.data?.message || "Please try again"
+      });
+    }
+  }
+  return (
+    <div className="p-4 max-w-6xl mx-auto">
       <div className="mb-6">
         <Link to="/community" className="btn btn-ghost">
           ← Back to Community
@@ -115,8 +155,67 @@ const CommunityMembers = () => {
           </div>
         </>
       )}
+      <div className="mt-8">
+        <h3 className="text-xl font-bold mb-4">Comments ({comments.length})</h3>
+
+        {/* Comment Form */}
+        {user && (
+          <form onSubmit={handleCommentSubmit} className="mb-6">
+            <div className="flex gap-2">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Add a comment..."
+                className="textarea textarea-bordered flex-1"
+                rows="3"
+              />
+              <button type="submit" className="btn btn-primary">
+                Post
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* Comments List */}
+        <div className="overflow-x-auto">
+          <table className="table table-zebra">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Comment</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {comments.length === 0 ? (
+                <tr>
+                  <td colSpan="3" className="text-center py-4 text-gray-500">
+                    No comments yet
+                  </td>
+                </tr>
+              ) : (
+                comments.map((comment) => (
+                  <tr key={comment.id}>
+                    <td>{comment.user_name}</td>
+                    <td>{comment.content}</td>
+                    <td>
+                      {new Date(comment.created_at).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    );
+  );
 };
 
 export default CommunityMembers;

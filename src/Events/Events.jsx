@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { FiPlusSquare } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useAuth } from "../Context/AuthContext"; // Adjust path as needed
+import { useAuth } from "../Context/AuthContext";
 
 const Events = () => {
   const [loading, setLoading] = useState(true);
