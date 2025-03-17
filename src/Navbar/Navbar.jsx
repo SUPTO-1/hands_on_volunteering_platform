@@ -63,7 +63,7 @@ const Navbar = () => {
               className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
             >
               <li>
-                <Link className="font-roboto font-medium">View Profile</Link>
+                <Link to="/viewProfile" className="font-roboto font-medium">View Profile</Link>
               </li>
               <li>
                 <button onClick={logout}>Logout</button>
