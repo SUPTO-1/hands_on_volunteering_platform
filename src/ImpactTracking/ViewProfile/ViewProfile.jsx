@@ -21,7 +21,33 @@ const ViewProfile = () => {
         loadProfile();
       }, []);
 
-    console.log("still profile: ",profile);
+   // console.log("still profile: ",profile);
+   const handleDownload = async (certId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/certificates/${certId}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          responseType: 'blob'
+        }
+      );
+
+      const file = new Blob([response.data], { type: 'application/pdf' });
+      const fileURL = URL.createObjectURL(file);
+      const tempLink = document.createElement('a');
+      tempLink.href = fileURL;
+      tempLink.setAttribute('download', `certificate-${certId}.pdf`);
+      document.body.appendChild(tempLink);
+      
+      tempLink.click();
+      URL.revokeObjectURL(fileURL);
+      document.body.removeChild(tempLink);
+
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download certificate');
+    }
+  };
   
     return (
       <div className="p-4 max-w-4xl mx-auto">
@@ -41,16 +67,19 @@ const ViewProfile = () => {
         <div className="card bg-base-100 shadow">
           <div className="card-body">
             <h3 className="card-title mb-4">Certificates</h3>
-            {profile?.certificates?.map(cert => (
+            {profile?.certificates?.length>0?(
+            profile?.certificates?.map(cert => (
               <div key={cert.id} className="flex items-center justify-between mb-2">
                 <span>{cert.hours_milestone} Hours Certificate</span>
-                <button 
+                <button onClick={()=>handleDownload(cert.id)} 
                   className="btn btn-sm btn-success"
                 >
                   Download
                 </button>
               </div>
-            ))}
+            ))):(
+              <p>No certificates found</p>
+            )}
           </div>
         </div>
   
