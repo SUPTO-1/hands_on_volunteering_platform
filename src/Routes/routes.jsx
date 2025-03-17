@@ -11,6 +11,7 @@ import Community from "../Community/Community";
 import AddRequest from "../Community/AddRequest/AddRequest";
 import CommunityMembers from "../Community/CommunityMembers/CommunityMembers";
 import ViewProfile from "../ImpactTracking/ViewProfile/ViewProfile";
+import LeaderBoard from "../ImpactTracking/LeaderBoard/LeaderBoard";
 
 const routes = createBrowserRouter([
     {
@@ -53,6 +54,10 @@ const routes = createBrowserRouter([
             {
                 path:"/viewProfile",
                 element:<PrivateRoute><ViewProfile></ViewProfile></PrivateRoute>
+            },
+            {
+                path:"/leaderboard",
+                element:<PrivateRoute><LeaderBoard></LeaderBoard></PrivateRoute>
             }
         ]
     },
