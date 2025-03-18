@@ -14,12 +14,17 @@ import ViewProfile from "../ImpactTracking/ViewProfile/ViewProfile";
 import LeaderBoard from "../ImpactTracking/LeaderBoard/LeaderBoard";
 import Teams from "../Teams/Teams";
 import AddTeam from "../Teams/AddTeam/AddTeam";
+import Home from "../Home/Home";
 
 const routes = createBrowserRouter([
     {
         path: "/",
         element:<Root></Root>,
         children:[
+            {
+                path:'/',
+                element:<Home></Home>
+            },
             {
                 path:'/login',
                 element:<Login></Login>
