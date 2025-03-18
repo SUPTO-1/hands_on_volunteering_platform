@@ -14,12 +14,18 @@ import ViewProfile from "../ImpactTracking/ViewProfile/ViewProfile";
 import LeaderBoard from "../ImpactTracking/LeaderBoard/LeaderBoard";
 import Teams from "../Teams/Teams";
 import AddTeam from "../Teams/AddTeam/AddTeam";
+import Home from "../Home/Home";
+import EditProfile from "../ImpactTracking/EditProfile/EditProfile";
 
 const routes = createBrowserRouter([
     {
         path: "/",
         element:<Root></Root>,
         children:[
+            {
+                path:'/',
+                element:<Home></Home>
+            },
             {
                 path:'/login',
                 element:<Login></Login>
@@ -68,6 +74,10 @@ const routes = createBrowserRouter([
             {
                 path:"/addTeam",
                 element:<PrivateRoute><AddTeam></AddTeam></PrivateRoute>
+            },
+            {
+                path:"/editProfile",
+                element:<PrivateRoute><EditProfile></EditProfile></PrivateRoute>
             }
         ]
     },
