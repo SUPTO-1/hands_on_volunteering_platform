@@ -15,6 +15,7 @@ import LeaderBoard from "../ImpactTracking/LeaderBoard/LeaderBoard";
 import Teams from "../Teams/Teams";
 import AddTeam from "../Teams/AddTeam/AddTeam";
 import Home from "../Home/Home";
+import EditProfile from "../ImpactTracking/EditProfile/EditProfile";
 
 const routes = createBrowserRouter([
     {
@@ -73,6 +74,10 @@ const routes = createBrowserRouter([
             {
                 path:"/addTeam",
                 element:<PrivateRoute><AddTeam></AddTeam></PrivateRoute>
+            },
+            {
+                path:"/editProfile",
+                element:<PrivateRoute><EditProfile></EditProfile></PrivateRoute>
             }
         ]
     },
