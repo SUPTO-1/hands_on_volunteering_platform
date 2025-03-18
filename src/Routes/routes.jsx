@@ -12,6 +12,8 @@ import AddRequest from "../Community/AddRequest/AddRequest";
 import CommunityMembers from "../Community/CommunityMembers/CommunityMembers";
 import ViewProfile from "../ImpactTracking/ViewProfile/ViewProfile";
 import LeaderBoard from "../ImpactTracking/LeaderBoard/LeaderBoard";
+import Teams from "../Teams/Teams";
+import AddTeam from "../Teams/AddTeam/AddTeam";
 
 const routes = createBrowserRouter([
     {
@@ -58,6 +60,14 @@ const routes = createBrowserRouter([
             {
                 path:"/leaderboard",
                 element:<PrivateRoute><LeaderBoard></LeaderBoard></PrivateRoute>
+            },
+            {
+                path:"/teams",
+                element:<PrivateRoute><Teams></Teams></PrivateRoute>
+            },
+            {
+                path:"/addTeam",
+                element:<PrivateRoute><AddTeam></AddTeam></PrivateRoute>
             }
         ]
     },
