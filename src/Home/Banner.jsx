@@ -24,7 +24,7 @@ function Banner() {
   };
 
   return (
-    <div className='w-full md:mx-auto mt-6 px-0 md:px-16' data-aos="fade-down" data-aos-duration="1500">
+    <div className='w-full px-0' data-aos="fade-down" data-aos-duration="1500">
       <Slider {...settings}>
         <div className='slide md:h-[700px] w-full'>
           <img className='rounded-lg md:h-[700px] w-full' src={third} alt="First Slide" />
