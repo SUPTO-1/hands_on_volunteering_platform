@@ -11,7 +11,8 @@ const CommunityMembers = () => {
   const { user } = useAuth();
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState([]);
-
+  const [showLogHours, setShowLogHours] = useState(false);
+  const [hours, setHours] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -73,7 +74,48 @@ const CommunityMembers = () => {
         text: err.response?.data?.message || "Please try again"
       });
     }
-  }
+  };
+  useEffect(() => {
+    const checkAttendance = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:5000/requests/${requestId}/members`
+        );
+        const isAttendee = data.members.some((a) => a.id === user?.id);
+        setShowLogHours(isAttendee);
+      } catch (error) {
+        console.error("Error checking attendance:", error);
+      }
+    };
+
+    if (user) checkAttendance();
+  }, [user, requestId]);
+  const handleLogHours = async () => {
+    try {
+      await axios.post(
+        `http://localhost:5000/requests/${requestId}/logHours`,
+        { hours },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Hours logged successfully",
+      });
+      setHours("");
+    } catch (err) {
+      console.error("Error logging hours:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err.response?.data?.message || "Failed to log hours",
+      });
+    }
+  };
   return (
     <div className="p-4 max-w-6xl mx-auto">
       <div className="mb-6">
@@ -121,6 +163,21 @@ const CommunityMembers = () => {
                   </p>
                 </div>
               </div>
+              {/* user log hour */}
+              {showLogHours && (
+                <div className="mt-4">
+                  <input
+                    type="number"
+                    value={hours}
+                    onChange={(e) => setHours(e.target.value)}
+                    placeholder="Enter hours"
+                    className="input input-bordered mr-2"
+                  />
+                  <button onClick={handleLogHours} className="btn btn-primary">
+                    Log Hours
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

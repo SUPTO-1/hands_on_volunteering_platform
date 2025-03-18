@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useAuth } from "../../Context/AuthContext";
 
 const EventAttendanceList = () => {
   const { eventId } = useParams();
   const [event, setEvent] = useState(null);
   const [attendees, setAttendees] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showLogHours, setShowLogHours] = useState(false);
+  const [hours, setHours] = useState("");
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,7 +25,7 @@ const EventAttendanceList = () => {
         setAttendees(attendeesRes.data.attendees);
         setLoading(false);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching event data:", err);
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -33,6 +37,48 @@ const EventAttendanceList = () => {
 
     fetchData();
   }, [eventId]);
+
+  useEffect(() => {
+    const checkAttendance = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:5000/events/${eventId}/attendees`
+        );
+        const isAttendee = data.attendees.some((a) => a.id === user?.id);
+        setShowLogHours(isAttendee);
+      } catch (error) {
+        console.error("Error checking attendance:", error);
+      }
+    };
+
+    if (user) checkAttendance();
+  }, [user, eventId]);
+
+  const handleLogHours = async () => {
+    try {
+      await axios.post(
+        `http://localhost:5000/events/${eventId}/logHours`,
+        { hours },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Hours logged successfully",
+      });
+    } catch (err) {
+      console.error("Error logging hours:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err.response?.data?.error || "Failed to log hours",
+      });
+    }
+  };
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
@@ -88,6 +134,22 @@ const EventAttendanceList = () => {
                   </p>
                 </div>
               </div>
+
+              {/* Log Hours Section */}
+              {showLogHours && (
+                <div className="mt-4">
+                  <input
+                    type="number"
+                    value={hours}
+                    onChange={(e) => setHours(e.target.value)}
+                    placeholder="Enter hours"
+                    className="input input-bordered mr-2"
+                  />
+                  <button onClick={handleLogHours} className="btn btn-primary">
+                    Log Hours
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
