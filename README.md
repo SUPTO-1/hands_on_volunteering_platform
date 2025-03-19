@@ -210,12 +210,12 @@ CREATE TABLE team_members (
    Create a `.env` file and add the following:
    ```env
    PORT=5000
-   DB_USER=postgres
+   DB_USER=your_db_user_name
    DB_HOST=localhost
-   DB_PORT=5432
-   DB_DATABASE=volunteer
-   DB_PASSWORD=helloworld
-   JWT_SECRET=e2f8dca05d0c6ca92c5384d1288133a9ae9f134eadce86242e8cec92efc3bdeda22a201a270d1ce60b48081d56aff873e11a1884241044355b8fe280a7f36603
+   DB_PORT=your_db_port
+   DB_DATABASE=your_db_name
+   DB_PASSWORD=your_db_password
+   JWT_SECRET=your_Jwt_secret
    ```
 4. Start the backend server:
    ```bash
