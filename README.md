@@ -2,8 +2,7 @@
 
 ## Project Overview
 Warrior is a volunteering platform where users can create accounts, participate in events, and contribute to community help requests. Organizations and individuals can post events or ongoing help requests, create public or private teams, track volunteer hours, and inspire others through leaderboards.
-
-![ER Diagram](./Images/erd.jpg)  
+ 
 ## Technologies Used
 
 ### Frontend:
@@ -62,10 +61,13 @@ Warrior is a volunteering platform where users can create accounts, participate 
 - Private comments or messaging.
 - Team dashboards and achievements.
 
+## ER Diagram
+![ER Diagram](./Images/erd.jpg) 
+
 ## Database Schema
 
 ### Users Table
-sql
+```sql
 CREATE TABLE users(
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -74,10 +76,10 @@ CREATE TABLE users(
     skills TEXT,
     causes TEXT
 );
-
+```
 
 ### Events Table
-sql
+```sql
 CREATE TABLE events (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -90,19 +92,19 @@ CREATE TABLE events (
     created_at TIMESTAMP DEFAULT NOW(),
     status VARCHAR(20) DEFAULT 'upcoming'
 );
-
+```
 
 ### Event Attendees Table
-sql
+```sql
 CREATE TABLE event_attendees (
     event_id INT REFERENCES events(id) ON DELETE CASCADE,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     joined_at TIMESTAMP DEFAULT NOW()
 );
-
+```
 
 ### Help Requests Table
-sql
+```sql
 CREATE TABLE help_requests (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -114,19 +116,19 @@ CREATE TABLE help_requests (
     created_at TIMESTAMP DEFAULT NOW(),
     status VARCHAR(20) DEFAULT 'open'
 );
-
+```
 
 ### Help Offers Table
-sql
+```sql
 CREATE TABLE help_offers (
     request_id INT REFERENCES help_requests(id) ON DELETE CASCADE,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     offered_at TIMESTAMP DEFAULT NOW()
 );
-
+```
 
 ### Request Comments Table
-sql
+```sql
 CREATE TABLE request_comments (
     id SERIAL PRIMARY KEY,
     request_id INT REFERENCES help_requests(id) ON DELETE CASCADE,
@@ -134,10 +136,10 @@ CREATE TABLE request_comments (
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
 );
-
+```
 
 ### Volunteer Hours Table
-sql
+```sql
 CREATE TABLE volunteer_hours (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -145,29 +147,29 @@ CREATE TABLE volunteer_hours (
     hours NUMERIC NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
 );
-
+```
 
 ### User Points Table
-sql
+```sql
 CREATE TABLE user_points (
     user_id INT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     total_points INT DEFAULT 0,
     total_hours NUMERIC DEFAULT 0
 );
-
+```
 
 ### Certificates Table
-sql
+```sql
 CREATE TABLE certificates (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     awarded_at TIMESTAMP DEFAULT NOW(),
     hours_milestone INT NOT NULL
 );
-
+```
 
 ### Teams Table
-sql
+```sql
 CREATE TABLE teams (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -176,17 +178,17 @@ CREATE TABLE teams (
     created_by INT REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT NOW()
 );
-
+```
 
 ### Team Members Table
-sql
+```sql
 CREATE TABLE team_members (
     team_id INT REFERENCES teams(id) ON DELETE CASCADE,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     joined_at TIMESTAMP DEFAULT NOW(),
     PRIMARY KEY (team_id, user_id)
 );
-
+```
 
 ## Setup Instructions
 
