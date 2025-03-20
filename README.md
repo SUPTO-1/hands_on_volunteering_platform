@@ -2,7 +2,7 @@
 
 ## Project Overview
 Warrior is a volunteering platform where users can create accounts, participate in events, and contribute to community help requests. Organizations and individuals can post events or ongoing help requests, create public or private teams, track volunteer hours, and inspire others through leaderboards.
- 
+
 ## Technologies Used
 
 ### Frontend:
@@ -60,6 +60,28 @@ Warrior is a volunteering platform where users can create accounts, participate 
 ### Features Not Implemented
 - Private comments or messaging.
 - Team dashboards and achievements.
+
+## Frontend Setup Instructions
+
+### Prerequisites
+- Node.js installed
+
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/SUPTO-1/hands_on_volunteering_platform.git
+   cd hands_on_volunteering_platform
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the frontend:
+   ```bash
+   npm run dev
+   ```
 
 ## ER Diagram
 ![ER Diagram](./Images/erd.jpg) 
@@ -190,7 +212,7 @@ CREATE TABLE team_members (
 );
 ```
 
-## Setup Instructions
+## Backend Setup Instructions
 
 ### Prerequisites
 - Node.js installed
@@ -199,13 +221,15 @@ CREATE TABLE team_members (
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/SUPTO-1/hands_on_volunteering_platform.git
-   cd hands_on_volunteering_platform
+   git clone https://github.com/SUPTO-1/hands-on-volunteering-platform_server.git
+   cd hands-on-volunteering-platform_server
    ```
+
 2. Install dependencies:
    ```bash
    npm install
    ```
+
 3. Set up environment variables:
    Create a `.env` file and add the following:
    ```env
@@ -213,19 +237,20 @@ CREATE TABLE team_members (
    DB_USER=your_db_user_name
    DB_HOST=localhost
    DB_PORT=your_db_port
-   DB_DATABASE=your_db_name
+   DB_DATABASE=volunteer
    DB_PASSWORD=your_db_password
    JWT_SECRET=your_Jwt_secret
    ```
-4. Start the backend server:
+   
+4. Generate a secure JWT secret key:
+   ```bash
+   node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+   ```
+   Copy the generated key and replace `your_Jwt_secret` in the `.env` file.
+
+5. Start the backend server:
    ```bash
    npm run dev
-   ```
-5. Start the frontend:
-   ```bash
-   cd client
-   npm install
-   npm start
    ```
 
 ## API Documentation
